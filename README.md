@@ -238,4 +238,4 @@ curl -X POST https://YOUR_PROJECT.supabase.co/functions/v1/heartbeat \
 
 ---
 
-**Built with ❤️ for efficient delivery management**
+**Built By A driver For Drivers**
