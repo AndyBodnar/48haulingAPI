@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Database, CheckCircle2, XCircle, Activity, HardDrive, Table, Users as UsersIcon, Eye } from 'lucide-react'
+import { Database, CheckCircle2, XCircle, Activity, HardDrive, Table, Users as UsersIcon, Eye, Code } from 'lucide-react'
 import TableBrowser from './TableBrowser'
+import QueryExecutor from './QueryExecutor'
 
 interface DatabaseStats {
   isConnected: boolean
@@ -38,6 +39,7 @@ export default function DatabaseTab() {
 
   // Table browser state
   const [selectedTable, setSelectedTable] = useState<string | null>(null)
+  const [showQueryExecutor, setShowQueryExecutor] = useState(false)
 
   useEffect(() => {
     fetchDatabaseStats()
@@ -160,17 +162,34 @@ export default function DatabaseTab() {
             <p className="text-sm text-gray-400">Real-time database statistics and health monitoring</p>
           </div>
         </div>
-        <button
-          onClick={fetchDatabaseStats}
-          disabled={loading}
-          className="flex items-center space-x-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded transition disabled:opacity-50"
-        >
-          <Activity className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          <span>Refresh</span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setShowQueryExecutor(!showQueryExecutor)}
+            className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
+              showQueryExecutor ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
+            }`}
+          >
+            <Code className="w-4 h-4" />
+            <span>Query Executor</span>
+          </button>
+          <button
+            onClick={fetchDatabaseStats}
+            disabled={loading}
+            className="flex items-center space-x-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded transition disabled:opacity-50"
+          >
+            <Activity className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <span>Refresh</span>
+          </button>
+        </div>
       </div>
 
+      {/* Query Executor Section */}
+      {showQueryExecutor && (
+        <QueryExecutor />
+      )}
+
       {/* Connection Status */}
+      {!showQueryExecutor && (
       <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -284,6 +303,7 @@ export default function DatabaseTab() {
         <span className="mx-2">•</span>
         Auto-refresh every 30 seconds
       </div>
+      )}
 
       {/* Table Browser Modal */}
       {selectedTable && (
