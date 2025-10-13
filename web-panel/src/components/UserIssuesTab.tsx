@@ -4,7 +4,15 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
 export default function UserIssuesTab() {
-  const [issues, setIssues] = useState<any[]>([])
+  const [issues, setIssues] = useState<Array<{
+    id: number
+    reported_at: string
+    reporter_id: string
+    description: string
+    status: string
+    app_version?: string
+    reporter?: { full_name?: string }
+  }>>([])
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -25,7 +33,7 @@ export default function UserIssuesTab() {
       if (error) {
         setError(error.message)
       } else {
-        setIssues(data)
+        setIssues(data as typeof issues)
       }
     }
 

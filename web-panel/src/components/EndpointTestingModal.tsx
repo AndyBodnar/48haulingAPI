@@ -18,7 +18,12 @@ interface EndpointTestingModalProps {
 
 export default function EndpointTestingModal({ endpoint, onClose }: EndpointTestingModalProps) {
   const [requestBody, setRequestBody] = useState('{\n  \n}')
-  const [response, setResponse] = useState<any>(null)
+  const [response, setResponse] = useState<{
+    status: number
+    statusText: string
+    data: unknown
+    responseTime: number
+  } | null>(null)
   const [loading, setLoading] = useState(false)
   const [generatedCode, setGeneratedCode] = useState('')
   const [showCode, setShowCode] = useState(false)
@@ -53,11 +58,11 @@ export default function EndpointTestingModal({ endpoint, onClose }: EndpointTest
         data,
         responseTime: endTime - startTime,
       })
-    } catch (error: any) {
+    } catch (error) {
       setResponse({
         status: 0,
         statusText: 'Error',
-        data: { error: error.message },
+        data: { error: error instanceof Error ? error.message : 'Unknown error' },
         responseTime: 0,
       })
     } finally {
@@ -89,8 +94,8 @@ export default function EndpointTestingModal({ endpoint, onClose }: EndpointTest
       } else {
         alert('Failed to generate code: ' + (result.error || 'Unknown error'))
       }
-    } catch (error: any) {
-      alert('Error generating code: ' + error.message)
+    } catch (error) {
+      alert('Error generating code: ' + (error instanceof Error ? error.message : 'Unknown error'))
     } finally {
       setLoading(false)
     }
@@ -243,7 +248,7 @@ export default function EndpointTestingModal({ endpoint, onClose }: EndpointTest
                 <ol className="list-decimal list-inside space-y-2 text-sm text-gray-300">
                   <li>Save the generated code to <code className="bg-gray-800 px-2 py-1 rounded text-xs">supabase/functions/{endpoint.name}/index.ts</code></li>
                   <li>Run: <code className="bg-gray-800 px-2 py-1 rounded text-xs">supabase functions deploy {endpoint.name}</code></li>
-                  <li>Test your endpoint using the "Test Endpoint" button above</li>
+                  <li>Test your endpoint using the &quot;Test Endpoint&quot; button above</li>
                   <li>Monitor performance in the API Observability dashboard</li>
                 </ol>
               </div>

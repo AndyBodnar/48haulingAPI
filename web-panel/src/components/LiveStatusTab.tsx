@@ -4,7 +4,12 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
 export default function LiveStatusTab() {
-  const [deviceStatus, setDeviceStatus] = useState<any[]>([])
+  const [deviceStatus, setDeviceStatus] = useState<Array<{
+    user_id: string
+    last_seen: string
+    app_type: string
+    user?: { full_name?: string }
+  }>>([])
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -21,7 +26,7 @@ export default function LiveStatusTab() {
       if (error) {
         setError(error.message)
       } else {
-        setDeviceStatus(data)
+        setDeviceStatus(data as typeof deviceStatus)
       }
     }
 

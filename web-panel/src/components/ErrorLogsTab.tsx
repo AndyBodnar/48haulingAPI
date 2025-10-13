@@ -4,7 +4,18 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
 export default function ErrorLogsTab() {
-  const [logs, setLogs] = useState<any[]>([])
+  const [logs, setLogs] = useState<Array<{
+    id: number
+    created_at: string
+    user_id: string
+    error_message: string
+    stack_trace?: string
+    app_version?: string
+    device_info?: unknown
+    severity?: string
+    resolved?: boolean
+    user?: { full_name?: string }
+  }>>([])
   const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
@@ -47,7 +58,7 @@ export default function ErrorLogsTab() {
       if (error) {
         setError(error.message)
       } else {
-        setLogs(data)
+        setLogs(data as typeof logs)
       }
     }
 

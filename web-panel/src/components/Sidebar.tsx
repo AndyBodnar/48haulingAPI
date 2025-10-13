@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import {
-  LayoutDashboard,
   Activity,
   Database,
   Zap,
@@ -12,11 +11,11 @@ import {
   Users,
   Settings,
   FileText,
-  Shield,
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Home
+  Home,
+  AlertTriangle
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -39,9 +38,9 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
     { id: 'live', name: 'Live Status', icon: Zap },
     { id: 'errors', name: 'Error Logs', icon: AlertTriangle },
     { id: 'issues', name: 'User Issues', icon: FileText },
+    { id: 'database', name: 'Database', icon: Database },
     { id: 'analytics', name: 'Analytics', icon: BarChart3, disabled: true },
     { id: 'users', name: 'Users', icon: Users, disabled: true },
-    { id: 'database', name: 'Database', icon: Database, disabled: true },
     { id: 'settings', name: 'Settings', icon: Settings, disabled: true },
   ]
 
@@ -131,6 +130,3 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
     </div>
   )
 }
-
-// Missing import
-import { AlertTriangle } from 'lucide-react'

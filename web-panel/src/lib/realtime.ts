@@ -5,7 +5,7 @@ import { supabase } from './supabase'
  * Subscribe to device status changes
  */
 export function subscribeToDeviceStatus(
-  callback: (payload: any) => void
+  callback: (payload: unknown) => void
 ): RealtimeChannel {
   return supabase
     .channel('device-status-changes')
@@ -25,7 +25,7 @@ export function subscribeToDeviceStatus(
  * Subscribe to job updates
  */
 export function subscribeToJobs(
-  callback: (payload: any) => void,
+  callback: (payload: unknown) => void,
   driverId?: string
 ): RealtimeChannel {
   const channel = supabase
@@ -48,7 +48,7 @@ export function subscribeToJobs(
  * Subscribe to error logs
  */
 export function subscribeToErrorLogs(
-  callback: (payload: any) => void
+  callback: (payload: unknown) => void
 ): RealtimeChannel {
   return supabase
     .channel('error-logs-changes')
@@ -68,7 +68,7 @@ export function subscribeToErrorLogs(
  * Subscribe to reported issues
  */
 export function subscribeToIssues(
-  callback: (payload: any) => void
+  callback: (payload: unknown) => void
 ): RealtimeChannel {
   return supabase
     .channel('issues-changes')

@@ -5,9 +5,10 @@ import LiveStatusTab from '@/components/LiveStatusTab'
 import ErrorLogsTab from '@/components/ErrorLogsTab'
 import UserIssuesTab from '@/components/UserIssuesTab'
 import APIObservabilityDashboard from '@/components/APIObservabilityDashboard'
+import DatabaseTab from '@/components/DatabaseTab'
 import Sidebar from '@/components/Sidebar'
 
-type Tab = 'dashboard' | 'observability' | 'live' | 'errors' | 'issues'
+type Tab = 'dashboard' | 'observability' | 'live' | 'errors' | 'issues' | 'database'
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<Tab>('observability')
@@ -24,6 +25,7 @@ export default function DashboardPage() {
         {activeTab === 'live' && <TabWrapper><LiveStatusTab /></TabWrapper>}
         {activeTab === 'errors' && <TabWrapper><ErrorLogsTab /></TabWrapper>}
         {activeTab === 'issues' && <TabWrapper><UserIssuesTab /></TabWrapper>}
+        {activeTab === 'database' && <TabWrapper><DatabaseTab /></TabWrapper>}
       </div>
     </div>
   )
