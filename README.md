@@ -204,7 +204,7 @@ curl -X POST https://YOUR_PROJECT.supabase.co/functions/v1/heartbeat \
 
 - **Issues**: Create GitHub issue
 - **Documentation**: See /docs folder
-- **Email**: [Your Support Email]
+- **Email**: andy@bespokeseating.xyz
 
 ## 🎯 Roadmap
 
