@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Database, CheckCircle2, XCircle, Activity, HardDrive, Table, Users as UsersIcon, Eye, Code, FileCode, Settings } from 'lucide-react'
+import { Database, CheckCircle2, XCircle, Activity, HardDrive, Table, Users as UsersIcon, Eye, Code, FileCode, Settings, Shield } from 'lucide-react'
 import TableBrowser from './TableBrowser'
 import QueryExecutor from './QueryExecutor'
 import SchemaManager from './SchemaManager'
 import DatabaseManagement from './DatabaseManagement'
+import RLSPolicyManager from './RLSPolicyManager'
 
 interface DatabaseStats {
   isConnected: boolean
@@ -44,6 +45,7 @@ export default function DatabaseTab() {
   const [showQueryExecutor, setShowQueryExecutor] = useState(false)
   const [showSchemaManager, setShowSchemaManager] = useState(false)
   const [showManagement, setShowManagement] = useState(false)
+  const [showRLS, setShowRLS] = useState(false)
 
   useEffect(() => {
     fetchDatabaseStats()
@@ -172,6 +174,7 @@ export default function DatabaseTab() {
               setShowQueryExecutor(!showQueryExecutor)
               setShowSchemaManager(false)
               setShowManagement(false)
+              setShowRLS(false)
             }}
             className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
               showQueryExecutor ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
@@ -185,6 +188,7 @@ export default function DatabaseTab() {
               setShowSchemaManager(!showSchemaManager)
               setShowQueryExecutor(false)
               setShowManagement(false)
+              setShowRLS(false)
             }}
             className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
               showSchemaManager ? 'bg-purple-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
@@ -198,6 +202,7 @@ export default function DatabaseTab() {
               setShowManagement(!showManagement)
               setShowQueryExecutor(false)
               setShowSchemaManager(false)
+              setShowRLS(false)
             }}
             className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
               showManagement ? 'bg-green-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
@@ -205,6 +210,20 @@ export default function DatabaseTab() {
           >
             <Settings className="w-4 h-4" />
             <span>Management</span>
+          </button>
+          <button
+            onClick={() => {
+              setShowRLS(!showRLS)
+              setShowQueryExecutor(false)
+              setShowSchemaManager(false)
+              setShowManagement(false)
+            }}
+            className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
+              showRLS ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
+            }`}
+          >
+            <Shield className="w-4 h-4" />
+            <span>RLS Policies</span>
           </button>
           <button
             onClick={fetchDatabaseStats}
@@ -232,8 +251,13 @@ export default function DatabaseTab() {
         <DatabaseManagement />
       )}
 
+      {/* RLS Policy Manager Section */}
+      {showRLS && (
+        <RLSPolicyManager />
+      )}
+
       {/* Connection Status */}
-      {!showQueryExecutor && !showSchemaManager && !showManagement && (
+      {!showQueryExecutor && !showSchemaManager && !showManagement && !showRLS && (
       <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
