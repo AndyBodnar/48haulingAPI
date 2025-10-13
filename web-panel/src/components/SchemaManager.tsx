@@ -343,10 +343,14 @@ ALTER TABLE ${tableName} ADD CONSTRAINT constraint_name UNIQUE (column_name);`
                             <div className="flex items-center space-x-2">
                               <span className="font-mono">{column.name}</span>
                               {column.isPrimaryKey && (
-                                <Key className="w-3 h-3 text-yellow-500" title="Primary Key" />
+                                <span title="Primary Key">
+                                  <Key className="w-3 h-3 text-yellow-500" />
+                                </span>
                               )}
                               {column.isForeignKey && (
-                                <LinkIcon className="w-3 h-3 text-blue-500" title="Foreign Key" />
+                                <span title="Foreign Key">
+                                  <LinkIcon className="w-3 h-3 text-blue-500" />
+                                </span>
                               )}
                             </div>
                           </td>
