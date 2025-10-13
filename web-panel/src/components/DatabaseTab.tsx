@@ -258,6 +258,7 @@ export default function DatabaseTab() {
 
       {/* Connection Status */}
       {!showQueryExecutor && !showSchemaManager && !showManagement && !showRLS && (
+      <>
       <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -371,6 +372,7 @@ export default function DatabaseTab() {
         <span className="mx-2">•</span>
         Auto-refresh every 30 seconds
       </div>
+      </>
       )}
 
       {/* Table Browser Modal */}
