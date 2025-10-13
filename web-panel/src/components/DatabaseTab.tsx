@@ -221,7 +221,7 @@ export default function DatabaseTab() {
         <StatCard
           icon={<UsersIcon className="w-6 h-6" />}
           title="Active Connections"
-          value={stats?.activeConnections > 0 ? stats.activeConnections.toString() : 'N/A'}
+          value={(stats?.activeConnections && stats.activeConnections > 0) ? stats.activeConnections.toString() : 'N/A'}
           subtitle="Current connections"
           color="orange"
         />
