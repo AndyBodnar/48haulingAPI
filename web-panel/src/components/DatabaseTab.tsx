@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Database, CheckCircle2, XCircle, Activity, HardDrive, Table, Users as UsersIcon, Eye, Code, FileCode } from 'lucide-react'
+import { Database, CheckCircle2, XCircle, Activity, HardDrive, Table, Users as UsersIcon, Eye, Code, FileCode, Settings } from 'lucide-react'
 import TableBrowser from './TableBrowser'
 import QueryExecutor from './QueryExecutor'
 import SchemaManager from './SchemaManager'
+import DatabaseManagement from './DatabaseManagement'
 
 interface DatabaseStats {
   isConnected: boolean
@@ -42,6 +43,7 @@ export default function DatabaseTab() {
   const [selectedTable, setSelectedTable] = useState<string | null>(null)
   const [showQueryExecutor, setShowQueryExecutor] = useState(false)
   const [showSchemaManager, setShowSchemaManager] = useState(false)
+  const [showManagement, setShowManagement] = useState(false)
 
   useEffect(() => {
     fetchDatabaseStats()
@@ -169,6 +171,7 @@ export default function DatabaseTab() {
             onClick={() => {
               setShowQueryExecutor(!showQueryExecutor)
               setShowSchemaManager(false)
+              setShowManagement(false)
             }}
             className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
               showQueryExecutor ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
@@ -181,6 +184,7 @@ export default function DatabaseTab() {
             onClick={() => {
               setShowSchemaManager(!showSchemaManager)
               setShowQueryExecutor(false)
+              setShowManagement(false)
             }}
             className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
               showSchemaManager ? 'bg-purple-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
@@ -188,6 +192,19 @@ export default function DatabaseTab() {
           >
             <FileCode className="w-4 h-4" />
             <span>Schema Manager</span>
+          </button>
+          <button
+            onClick={() => {
+              setShowManagement(!showManagement)
+              setShowQueryExecutor(false)
+              setShowSchemaManager(false)
+            }}
+            className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
+              showManagement ? 'bg-green-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
+            }`}
+          >
+            <Settings className="w-4 h-4" />
+            <span>Management</span>
           </button>
           <button
             onClick={fetchDatabaseStats}
@@ -210,8 +227,13 @@ export default function DatabaseTab() {
         <SchemaManager />
       )}
 
+      {/* Database Management Section */}
+      {showManagement && (
+        <DatabaseManagement />
+      )}
+
       {/* Connection Status */}
-      {!showQueryExecutor && !showSchemaManager && (
+      {!showQueryExecutor && !showSchemaManager && !showManagement && (
       <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
