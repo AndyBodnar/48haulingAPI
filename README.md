@@ -1,10 +1,10 @@
-# Delivery API Hub 🚚
+# Delivery API Hub 
 
 Central API hub serving as the backend for:
 - **Mobile App** (Android/iOS) - For delivery drivers
 - **Web Admin Panel** - For management and monitoring
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 api/
@@ -43,7 +43,7 @@ api/
 └── README.md           # This file
 ```
 
-## 🚀 Features
+##  Features
 
 ### Core Functionality
 - ✅ User authentication (Supabase Auth)
@@ -151,7 +151,7 @@ supabase db push
 supabase functions deploy
 ```
 
-## 🔐 Security Features
+##  Security Features
 
 - Row Level Security (RLS) on all tables
 - JWT-based authentication
