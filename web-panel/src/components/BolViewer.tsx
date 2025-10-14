@@ -28,6 +28,7 @@ export default function BolViewer() {
   const [loading, setLoading] = useState(true)
   const [selectedDocument, setSelectedDocument] = useState<BolDocument | null>(null)
   const [showPreview, setShowPreview] = useState(false)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   // Filters
   const [searchTerm, setSearchTerm] = useState('')
@@ -161,28 +162,67 @@ export default function BolViewer() {
     const toastId = toast.loading('Preparing download...')
 
     try {
-      // Get signed URL from Supabase Storage
+      // Get signed URL from Supabase Storage for download
       const { data, error } = await supabase.storage
         .from('job-attachments')
-        .createSignedUrl(doc.file_url, 3600) // 1 hour expiry
+        .createSignedUrl(doc.file_url, 60, {
+          download: true // Force download
+        })
 
-      if (error) throw error
+      if (error) {
+        console.error('Storage error:', error)
+        throw new Error(`Failed to access file: ${error.message}`)
+      }
 
-      // Download file
-      window.open(data.signedUrl, '_blank')
+      if (!data || !data.signedUrl) {
+        throw new Error('No signed URL returned from storage')
+      }
+
+      // Trigger download
+      const link = document.createElement('a')
+      link.href = data.signedUrl
+      link.download = doc.file_name
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
       toast.success('Document downloaded', { id: toastId })
       await audit.downloadDocument(doc.id, doc.file_name, doc.load_number)
     } catch (error: any) {
       console.error('Error downloading document:', error.message)
-      toast.error('Failed to download document', { id: toastId })
-      audit.error('download', 'document', error.message, { doc_id: doc.id, file_name: doc.file_name })
+      toast.error(`Failed to download: ${error.message}`, { id: toastId })
+      audit.error('download', 'document', error.message, { doc_id: doc.id, file_name: doc.file_name, file_url: doc.file_url })
     }
   }
 
   const previewDocument = async (doc: BolDocument) => {
-    setSelectedDocument(doc)
-    setShowPreview(true)
-    await audit.viewDocument(doc.id, doc.file_name, doc.load_number)
+    const toastId = toast.loading('Loading preview...')
+
+    try {
+      // Get signed URL for viewing (without download header)
+      const { data, error } = await supabase.storage
+        .from('job-attachments')
+        .createSignedUrl(doc.file_url, 3600) // 1 hour expiry for preview
+
+      if (error) {
+        console.error('Storage error:', error)
+        throw new Error(`Failed to access file: ${error.message}`)
+      }
+
+      if (!data || !data.signedUrl) {
+        throw new Error('No signed URL returned from storage')
+      }
+
+      setPreviewUrl(data.signedUrl)
+      setSelectedDocument(doc)
+      setShowPreview(true)
+      toast.success('Preview loaded', { id: toastId })
+      await audit.viewDocument(doc.id, doc.file_name, doc.load_number)
+    } catch (error: any) {
+      console.error('Error previewing document:', error.message)
+      toast.error(`Failed to preview: ${error.message}`, { id: toastId })
+      audit.error('view', 'document', error.message, { doc_id: doc.id, file_name: doc.file_name, file_url: doc.file_url })
+    }
   }
 
   return (
@@ -447,7 +487,10 @@ export default function BolViewer() {
                   <Download className="w-5 h-5" />
                 </button>
                 <button
-                  onClick={() => setShowPreview(false)}
+                  onClick={() => {
+                    setShowPreview(false)
+                    setPreviewUrl(null)
+                  }}
                   className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
                 >
                   <X className="w-5 h-5" />
@@ -457,17 +500,27 @@ export default function BolViewer() {
 
             {/* Preview Content */}
             <div className="p-6">
-              {selectedDocument.file_type.includes('image') ? (
+              {!previewUrl ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+                </div>
+              ) : selectedDocument.file_type.includes('image') ? (
                 <img
-                  src={selectedDocument.file_url}
+                  src={previewUrl}
                   alt={selectedDocument.file_name}
                   className="w-full h-auto rounded-lg"
+                  onError={() => {
+                    toast.error('Failed to load image preview')
+                  }}
                 />
               ) : selectedDocument.file_type.includes('pdf') ? (
                 <iframe
-                  src={selectedDocument.file_url}
-                  className="w-full h-[600px] rounded-lg"
+                  src={previewUrl}
+                  className="w-full h-[600px] rounded-lg border border-gray-800"
                   title={selectedDocument.file_name}
+                  onError={() => {
+                    toast.error('Failed to load PDF preview')
+                  }}
                 />
               ) : (
                 <div className="text-center py-12">
