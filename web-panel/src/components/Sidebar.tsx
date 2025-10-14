@@ -19,7 +19,8 @@ import {
   Truck,
   MessageCircle,
   MapPin,
-  FileStack
+  FileStack,
+  Shield
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -44,6 +45,7 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
     { id: 'bols', name: 'BOL Documents', icon: FileStack, section: 'business' },
     { id: 'messages', name: 'Messages', icon: MessageCircle, section: 'business' },
     { id: 'gps', name: 'GPS Tracking', icon: MapPin, section: 'business' },
+    { id: 'audit', name: 'Audit Logs', icon: Shield, section: 'technical' },
     { id: 'observability', name: 'API Observability', icon: Activity, section: 'technical' },
     { id: 'live', name: 'Live Status', icon: Zap, section: 'technical' },
     { id: 'errors', name: 'Error Logs', icon: AlertTriangle, section: 'technical' },

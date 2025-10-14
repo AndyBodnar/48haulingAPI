@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { FileText, Download, Eye, Search, Filter, Calendar, Truck, Package, X } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { audit } from '@/lib/audit'
 
 interface BolDocument {
   id: string
@@ -84,6 +86,8 @@ export default function BolViewer() {
       setDocuments(transformedData)
     } catch (error: any) {
       console.error('Error fetching documents:', error.message)
+      toast.error('Failed to fetch documents')
+      audit.error('view', 'document', error.message)
     } finally {
       setLoading(false)
     }
@@ -154,6 +158,8 @@ export default function BolViewer() {
   }
 
   const downloadDocument = async (doc: BolDocument) => {
+    const toastId = toast.loading('Preparing download...')
+
     try {
       // Get signed URL from Supabase Storage
       const { data, error } = await supabase.storage
@@ -164,15 +170,19 @@ export default function BolViewer() {
 
       // Download file
       window.open(data.signedUrl, '_blank')
+      toast.success('Document downloaded', { id: toastId })
+      await audit.downloadDocument(doc.id, doc.file_name, doc.load_number)
     } catch (error: any) {
       console.error('Error downloading document:', error.message)
-      alert('Failed to download document')
+      toast.error('Failed to download document', { id: toastId })
+      audit.error('download', 'document', error.message, { doc_id: doc.id, file_name: doc.file_name })
     }
   }
 
   const previewDocument = async (doc: BolDocument) => {
     setSelectedDocument(doc)
     setShowPreview(true)
+    await audit.viewDocument(doc.id, doc.file_name, doc.load_number)
   }
 
   return (

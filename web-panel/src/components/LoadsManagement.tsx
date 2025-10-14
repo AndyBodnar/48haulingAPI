@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Truck, MapPin, Calendar, User, Edit, Trash2, Plus, Search, Filter, ExternalLink } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { audit } from '@/lib/audit'
 
 interface Load {
   id: number
@@ -78,6 +80,8 @@ export default function LoadsManagement() {
       setLoads(formattedData)
     } catch (error: any) {
       console.error('Error fetching loads:', error.message)
+      toast.error('Failed to fetch loads')
+      audit.error('view', 'load', error.message)
     } finally {
       setLoading(false)
     }
@@ -99,7 +103,12 @@ export default function LoadsManagement() {
   }
 
   const deleteLoad = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this load?')) return
+    const load = loads.find(l => l.id === id)
+    const loadNumber = load?.load_number || `LD-${id}`
+
+    if (!confirm(`Are you sure you want to delete load ${loadNumber}?`)) return
+
+    const toastId = toast.loading('Deleting load...')
 
     try {
       const { error } = await supabase
@@ -109,10 +118,12 @@ export default function LoadsManagement() {
 
       if (error) throw error
 
-      alert('Load deleted successfully')
+      toast.success('Load deleted successfully', { id: toastId })
+      await audit.deleteLoad(id, loadNumber)
       fetchLoads()
     } catch (error: any) {
-      alert('Error deleting load: ' + error.message)
+      toast.error(`Failed to delete load: ${error.message}`, { id: toastId })
+      audit.error('delete', 'load', error.message, { load_id: id, load_number: loadNumber })
     }
   }
 
@@ -439,6 +450,8 @@ function LoadFormModal({
     e.preventDefault()
     setSubmitting(true)
 
+    const toastId = toast.loading(load ? 'Updating load...' : 'Creating load...')
+
     try {
       if (load) {
         // Update existing load
@@ -448,20 +461,37 @@ function LoadFormModal({
           .eq('id', load.id)
 
         if (error) throw error
-        alert('Load updated successfully')
+
+        toast.success('Load updated successfully', { id: toastId })
+        const loadNumber = load.load_number || `LD-${load.id}`
+        await audit.updateLoad(load.id, loadNumber, formData)
       } else {
         // Create new load
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('jobs')
           .insert([formData])
+          .select()
+          .single()
 
         if (error) throw error
-        alert('Load created successfully')
+
+        toast.success('Load created successfully', { id: toastId })
+        const loadNumber = data.load_number || `LD-${data.id}`
+        await audit.createLoad(data.id, loadNumber)
+
+        // If driver assigned, log that too
+        if (formData.driver_id) {
+          const driver = drivers.find(d => d.id === formData.driver_id)
+          if (driver) {
+            await audit.assignDriver(data.id, loadNumber, driver.id, driver.full_name)
+          }
+        }
       }
 
       onSuccess()
     } catch (error: any) {
-      alert('Error saving load: ' + error.message)
+      toast.error(`Failed to save load: ${error.message}`, { id: toastId })
+      audit.error(load ? 'update' : 'create', 'load', error.message, formData)
     } finally {
       setSubmitting(false)
     }

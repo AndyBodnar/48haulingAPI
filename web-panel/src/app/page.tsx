@@ -13,8 +13,9 @@ import MessagingSystem from '@/components/MessagingSystem'
 import DriverManagement from '@/components/DriverManagement'
 import GpsTracking from '@/components/GpsTracking'
 import BolViewer from '@/components/BolViewer'
+import AuditLogs from '@/components/AuditLogs'
 
-type Tab = 'dashboard' | 'loads' | 'drivers' | 'dvirs' | 'bols' | 'messages' | 'gps' | 'observability' | 'live' | 'errors' | 'issues' | 'database'
+type Tab = 'dashboard' | 'loads' | 'drivers' | 'dvirs' | 'bols' | 'messages' | 'gps' | 'audit' | 'observability' | 'live' | 'errors' | 'issues' | 'database'
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard')
@@ -33,6 +34,7 @@ export default function DashboardPage() {
         {activeTab === 'bols' && <BolViewer />}
         {activeTab === 'messages' && <MessagingSystem />}
         {activeTab === 'gps' && <GpsTracking />}
+        {activeTab === 'audit' && <AuditLogs />}
         {activeTab === 'observability' && <APIObservabilityDashboard />}
         {activeTab === 'live' && <TabWrapper><LiveStatusTab /></TabWrapper>}
         {activeTab === 'errors' && <TabWrapper><ErrorLogsTab /></TabWrapper>}
