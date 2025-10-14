@@ -147,7 +147,7 @@ export default function GpsTracking() {
         <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Online (< 5 min)</p>
+              <p className="text-gray-400 text-sm">Online (&lt; 5 min)</p>
               <p className="text-2xl font-bold mt-1 text-green-500">
                 {activeDrivers.filter(d => d.minutes_old < 5).length}
               </p>
