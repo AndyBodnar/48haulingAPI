@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Database, CheckCircle2, XCircle, Activity, HardDrive, Table, Users as UsersIcon, Eye, Code, FileCode, Settings, Shield } from 'lucide-react'
+import { Database, CheckCircle2, XCircle, Activity, HardDrive, Table, Users as UsersIcon, Eye, Code, FileCode, Settings, Shield, Zap } from 'lucide-react'
 import TableBrowser from './TableBrowser'
 import QueryExecutor from './QueryExecutor'
 import SchemaManager from './SchemaManager'
 import DatabaseManagement from './DatabaseManagement'
 import RLSPolicyManager from './RLSPolicyManager'
+import RealtimeMonitoring from './RealtimeMonitoring'
 
 interface DatabaseStats {
   isConnected: boolean
@@ -46,6 +47,7 @@ export default function DatabaseTab() {
   const [showSchemaManager, setShowSchemaManager] = useState(false)
   const [showManagement, setShowManagement] = useState(false)
   const [showRLS, setShowRLS] = useState(false)
+  const [showMonitoring, setShowMonitoring] = useState(false)
 
   useEffect(() => {
     fetchDatabaseStats()
@@ -175,6 +177,7 @@ export default function DatabaseTab() {
               setShowSchemaManager(false)
               setShowManagement(false)
               setShowRLS(false)
+              setShowMonitoring(false)
             }}
             className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
               showQueryExecutor ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
@@ -189,6 +192,7 @@ export default function DatabaseTab() {
               setShowQueryExecutor(false)
               setShowManagement(false)
               setShowRLS(false)
+              setShowMonitoring(false)
             }}
             className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
               showSchemaManager ? 'bg-purple-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
@@ -203,6 +207,7 @@ export default function DatabaseTab() {
               setShowQueryExecutor(false)
               setShowSchemaManager(false)
               setShowRLS(false)
+              setShowMonitoring(false)
             }}
             className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
               showManagement ? 'bg-green-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
@@ -217,6 +222,7 @@ export default function DatabaseTab() {
               setShowQueryExecutor(false)
               setShowSchemaManager(false)
               setShowManagement(false)
+              setShowMonitoring(false)
             }}
             className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
               showRLS ? 'bg-blue-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
@@ -224,6 +230,21 @@ export default function DatabaseTab() {
           >
             <Shield className="w-4 h-4" />
             <span>RLS Policies</span>
+          </button>
+          <button
+            onClick={() => {
+              setShowMonitoring(!showMonitoring)
+              setShowQueryExecutor(false)
+              setShowSchemaManager(false)
+              setShowManagement(false)
+              setShowRLS(false)
+            }}
+            className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
+              showMonitoring ? 'bg-yellow-600 text-white' : 'bg-gray-800 hover:bg-gray-700'
+            }`}
+          >
+            <Zap className="w-4 h-4" />
+            <span>Monitoring</span>
           </button>
           <button
             onClick={fetchDatabaseStats}
@@ -256,8 +277,13 @@ export default function DatabaseTab() {
         <RLSPolicyManager />
       )}
 
+      {/* Real-time Monitoring Section */}
+      {showMonitoring && (
+        <RealtimeMonitoring />
+      )}
+
       {/* Connection Status */}
-      {!showQueryExecutor && !showSchemaManager && !showManagement && !showRLS && (
+      {!showQueryExecutor && !showSchemaManager && !showManagement && !showRLS && !showMonitoring && (
       <>
       <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800">
         <div className="flex items-center justify-between">

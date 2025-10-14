@@ -1,0 +1,13 @@
+{
+  "name": "48-hauling-api",
+  "version": "1.0.0",
+  "description": "48 Hauling API Backend",
+  "main": "run-migration.js",
+  "scripts": {
+    "migrate": "node run-migration.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.3",
+    "pg": "^8.16.3"
+  }
+}
