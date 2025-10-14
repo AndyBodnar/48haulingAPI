@@ -12,8 +12,9 @@ import DvirManagement from '@/components/DvirManagement'
 import MessagingSystem from '@/components/MessagingSystem'
 import DriverManagement from '@/components/DriverManagement'
 import GpsTracking from '@/components/GpsTracking'
+import BolViewer from '@/components/BolViewer'
 
-type Tab = 'dashboard' | 'loads' | 'drivers' | 'dvirs' | 'messages' | 'gps' | 'observability' | 'live' | 'errors' | 'issues' | 'database'
+type Tab = 'dashboard' | 'loads' | 'drivers' | 'dvirs' | 'bols' | 'messages' | 'gps' | 'observability' | 'live' | 'errors' | 'issues' | 'database'
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard')
@@ -25,10 +26,11 @@ export default function DashboardPage() {
 
       {/* Main Content Area */}
       <div className="flex-1 ml-64 overflow-auto">
-        {activeTab === 'dashboard' && <DashboardHome />}
+        {activeTab === 'dashboard' && <DashboardHome onNavigate={(tab) => setActiveTab(tab)} />}
         {activeTab === 'loads' && <LoadsManagement />}
         {activeTab === 'drivers' && <DriverManagement />}
         {activeTab === 'dvirs' && <DvirManagement />}
+        {activeTab === 'bols' && <BolViewer />}
         {activeTab === 'messages' && <MessagingSystem />}
         {activeTab === 'gps' && <GpsTracking />}
         {activeTab === 'observability' && <APIObservabilityDashboard />}
@@ -53,7 +55,7 @@ function TabWrapper({ children }: { children: React.ReactNode }) {
 }
 
 // Simple dashboard home
-function DashboardHome() {
+function DashboardHome({ onNavigate }: { onNavigate: (tab: Tab) => void }) {
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-gray-100">
       <div className="p-6">
@@ -66,45 +68,71 @@ function DashboardHome() {
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-300">Business Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors">
+            <button
+              onClick={() => onNavigate('loads')}
+              className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors text-left cursor-pointer"
+            >
               <h3 className="text-lg font-semibold mb-2 flex items-center space-x-2">
                 <span className="text-2xl">🚚</span>
                 <span>Loads Management</span>
               </h3>
               <p className="text-sm text-gray-400 mt-2">Create, assign, and track loads with full pickup/delivery details</p>
-            </div>
+            </button>
 
-            <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors">
+            <button
+              onClick={() => onNavigate('drivers')}
+              className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors text-left cursor-pointer"
+            >
               <h3 className="text-lg font-semibold mb-2 flex items-center space-x-2">
                 <span className="text-2xl">👥</span>
                 <span>Driver Management</span>
               </h3>
               <p className="text-sm text-gray-400 mt-2">Manage drivers, view performance, and track availability</p>
-            </div>
+            </button>
 
-            <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors">
+            <button
+              onClick={() => onNavigate('dvirs')}
+              className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors text-left cursor-pointer"
+            >
               <h3 className="text-lg font-semibold mb-2 flex items-center space-x-2">
                 <span className="text-2xl">📋</span>
                 <span>DVIR Reports</span>
               </h3>
               <p className="text-sm text-gray-400 mt-2">Review vehicle inspections and manage defects/repairs</p>
-            </div>
+            </button>
 
-            <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors">
+            <button
+              onClick={() => onNavigate('bols')}
+              className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors text-left cursor-pointer"
+            >
+              <h3 className="text-lg font-semibold mb-2 flex items-center space-x-2">
+                <span className="text-2xl">📄</span>
+                <span>BOL Documents</span>
+              </h3>
+              <p className="text-sm text-gray-400 mt-2">View uploaded Bills of Lading and delivery documents</p>
+            </button>
+
+            <button
+              onClick={() => onNavigate('messages')}
+              className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors text-left cursor-pointer"
+            >
               <h3 className="text-lg font-semibold mb-2 flex items-center space-x-2">
                 <span className="text-2xl">💬</span>
                 <span>Messaging</span>
               </h3>
               <p className="text-sm text-gray-400 mt-2">Chat with drivers in real-time about loads and logistics</p>
-            </div>
+            </button>
 
-            <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors">
+            <button
+              onClick={() => onNavigate('gps')}
+              className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 hover:border-green-600 transition-colors text-left cursor-pointer"
+            >
               <h3 className="text-lg font-semibold mb-2 flex items-center space-x-2">
                 <span className="text-2xl">📍</span>
                 <span>GPS Tracking</span>
               </h3>
               <p className="text-sm text-gray-400 mt-2">Real-time location tracking and route history</p>
-            </div>
+            </button>
 
             <div className="bg-[#1a1a1a] rounded-lg p-6 border border-gray-800 border-dashed opacity-50">
               <h3 className="text-lg font-semibold mb-2 flex items-center space-x-2">
